@@ -1,16 +1,16 @@
 package router
 
 import (
-	"github.com/reedkihaddi/REST-API/models"
-	"github.com/reedkihaddi/REST-API/db"
 	"database/sql"
 	"fmt"
 	"log"
-	"net/http"
-	_ "github.com/lib/pq"
-	"github.com/gorilla/mux"
-)
 
+	"github.com/reedkihaddi/REST-API/handlers"
+
+	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
+	database "github.com/reedkihaddi/REST-API/db"
+)
 
 func NewRouter(user, password, dbname string) *mux.Router {
 	conn := fmt.Sprintf("postgres://%s:%s@localhost/%s?sslmode=disable", user, password, dbname)
@@ -21,14 +21,28 @@ func NewRouter(user, password, dbname string) *mux.Router {
 		log.Fatal(err)
 	}
 	stuffDB, err := database.New(db)
-    if err != nil {
-        log.Fatal(err)
-    }
+	if err != nil {
+		log.Fatal(err)
+	}
 	r := mux.NewRouter()
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("Hello!")
-		stuffDB.CreateProduct(&models.Product{ID:1,Name:"Wll",Price:11.3})
-	})
+	// r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	fmt.Printf("Hello!")
+	// 	stuffDB.CreateProduct(&models.Product{ID: 1, Name: "Wll", Price: 11.3})
+	// })
+	r.Handle("/", handlers.HelloHandler(stuffDB))
 	return r
 }
 
+// func hello(db *database.DB) {
+// 	fmt.Printf("Hello!")
+// 	db.CreateProduct(&models.Product{ID: 1, Name: "Wll", Price: 11.3})
+
+// }
+
+// func helloHandler(db *database.DB) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		db.CreateProduct(&models.Product{ID: 1, Name: "Wll", Price: 11.3})
+// 		// Write it back to the client.
+// 		fmt.Printf("Hello!")
+// 	})
+// }
