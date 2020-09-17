@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	database "github.com/reedkihaddi/REST-API/db"
+	"github.com/reedkihaddi/REST-API/models"
 )
 
 func HelloHandler(db *database.DB) http.Handler {
@@ -15,7 +16,7 @@ func HelloHandler(db *database.DB) http.Handler {
 		//fmt.Printf("%+v\n",p)
 		//db.DeleteProduct(&models.Product{ID: 1, Name: "Wlll", Price: 11.3})
 		//x, _ := db.GetProducts(5, 1)
-		//db.CreateProduct(&models.Product{ID: 1, Name: "Wll", Price: 11.3})
+		db.CreateProduct(&models.Product{ID: 1, Name: "Wll", Price: 25.3})
 		// Write it back to the client.
 		fmt.Printf("Hello!")
 	})
