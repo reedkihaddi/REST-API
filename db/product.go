@@ -2,7 +2,10 @@ package database
 
 import (
 	"database/sql"
+	"errors"
+
 	//pq is the PostgreSQL driver.
+	"github.com/lib/pq"
 	_ "github.com/lib/pq"
 	"github.com/reedkihaddi/REST-API/models"
 )
@@ -20,10 +23,16 @@ func New(db *sql.DB) (*DB, error) {
 
 //CreateProduct inserts a product into the database.
 func (db *DB) CreateProduct(p *models.Product) error {
-	err := db.db.QueryRow("INSERT INTO products(name,price) VALUES($1,$2) RETURNING id",
-		p.Name, p.Price).Scan(&p.ID)
-	if err != nil {
-		return err
+	//var s string
+	_,err := db.db.Exec("INSERT INTO products(id,name,price) VALUES($1,$2,$3)",
+		p.ID, p.Name, p.Price)
+	if err, ok := err.(*pq.Error); ok {
+		switch {
+		case err.Code.Name() == "unique_violation":
+			return errors.New("already found a record in database with associated ID")
+		default:
+			return err
+		}
 	}
 	return nil
 }

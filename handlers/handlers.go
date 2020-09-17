@@ -9,25 +9,15 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
+
+	"github.com/reedkihaddi/REST-API/logging"
 
 	"github.com/gorilla/mux"
 	database "github.com/reedkihaddi/REST-API/db"
 	"github.com/reedkihaddi/REST-API/models"
+	"go.uber.org/zap"
 )
-
-// func HelloHandler(db *database.DB) http.Handler {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		// fmt.Printf("%+v\n",emp)
-// 		//p := &models.Product{}
-// 		//p.ID = 1
-// 		//fmt.Printf("%+v\n",p)
-// 		//db.DeleteProduct(&models.Product{ID: 1, Name: "Wlll", Price: 11.3})
-// 		//x, _ := db.GetProducts(5, 1)
-// 		db.CreateProduct(&models.Product{ID: 1, Name: "Wll", Price: 25.3})
-// 		// Write it back to the client.
-// 		fmt.Printf("Hello!")
-// 	})
-// }
 
 //GetProduct is the handler to get product given the product ID.
 func GetProduct(db *database.DB) http.Handler {
@@ -35,6 +25,7 @@ func GetProduct(db *database.DB) http.Handler {
 		vars := mux.Vars(r)
 		id, err := strconv.Atoi(vars["id"])
 		if err != nil {
+			logging.Log.Error("Couldn't convert id to int.")
 			respondWithError(w, http.StatusBadRequest, "Invalid Product ID")
 			return
 		}
@@ -43,6 +34,7 @@ func GetProduct(db *database.DB) http.Handler {
 		if err := db.GetProduct(p); err != nil {
 			switch err {
 			case sql.ErrNoRows:
+				logging.Log.Infof("Product with id:%s requested but not found.", vars["id"])
 				respondWithError(w, http.StatusNotFound, "Product not found")
 			default:
 				respondWithError(w, http.StatusInternalServerError, err.Error())
@@ -56,11 +48,12 @@ func GetProduct(db *database.DB) http.Handler {
 //CreateProduct creates a product and inserts into the database.
 func CreateProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
 		dec := json.NewDecoder(r.Body)
 		dec.DisallowUnknownFields()
 		var p *models.Product
-
 		err := dec.Decode(&p)
+
 		if err != nil {
 			var syntaxError *json.SyntaxError
 			var unmarshalTypeError *json.UnmarshalTypeError
@@ -91,6 +84,7 @@ func CreateProduct(db *database.DB) http.Handler {
 
 		defer r.Body.Close()
 		if err := db.CreateProduct(p); err != nil {
+			logging.Log.Errorf("Couldn't insert a product into database. error: %s", err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -104,6 +98,7 @@ func UpdateProduct(db *database.DB) http.Handler {
 		vars := mux.Vars(r)
 		id, err := strconv.Atoi(vars["id"])
 		if err != nil {
+			logging.Log.Error("Couldn't convert id to int.")
 			respondWithError(w, http.StatusBadRequest, "Invalid product ID")
 			return
 		}
@@ -117,6 +112,7 @@ func UpdateProduct(db *database.DB) http.Handler {
 		defer r.Body.Close()
 		p.ID = id
 		if err := db.UpdateProduct(p); err != nil {
+			logging.Log.Errorf("Couldn't update a product with id:%s. error: %s", vars["id"], err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -130,12 +126,14 @@ func DeleteProduct(db *database.DB) http.Handler {
 		vars := mux.Vars(r)
 		id, err := strconv.Atoi(vars["id"])
 		if err != nil {
+			logging.Log.Error("Couldn't convert id to int.")
 			respondWithError(w, http.StatusBadRequest, "Invalid product ID")
 			return
 		}
 		p := &models.Product{}
 		p.ID = id
 		if err := db.DeleteProduct(p); err != nil {
+			logging.Log.Errorf("Couldn't delete a product with id:%s. error: %s", vars["id"], err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -147,22 +145,23 @@ func DeleteProduct(db *database.DB) http.Handler {
 //ListProducts lists all the products from the database.
 func ListProducts(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// count, _ := strconv.Atoi(r.FormValue("count"))
-		// start, _ := strconv.Atoi(r.FormValue("start"))
-	
-		// if start < 0 {
-		// 	start = 0
-		// }
-		// if count < 0 {
-		// 	count = 0
-		// }
 		products, err := db.ListProducts()
 		if err != nil {
+			logging.Log.Errorf("Couldn't list products. error: %s", err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
-	
+
 		respondWithJSON(w, http.StatusOK, products)
+	})
+}
+
+//WithMetrics returns the time taken for the request.
+func WithMetrics(l *zap.SugaredLogger, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		began := time.Now()
+		next.ServeHTTP(w, r)
+		l.Infof("%s %s took %s", r.Method, r.URL, time.Since(began))
 	})
 }
 
