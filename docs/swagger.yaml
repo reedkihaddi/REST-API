@@ -1,0 +1,218 @@
+basePath: /
+definitions:
+  models.HTTPError:
+    properties:
+      error:
+        example: error message
+        type: string
+    type: object
+  models.HTTPOK:
+    properties:
+      result:
+        example: success
+        type: string
+    type: object
+  models.Product:
+    properties:
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Nvidia RTX3090
+        type: string
+      price:
+        example: 1499.99
+        type: number
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: saruabhbraryo@gmail.com
+    name: API Support
+  description: This is a sample REST-API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Products API
+  version: "1.0"
+paths:
+  /product:
+    post:
+      consumes:
+      - application/json
+      description: Create a product
+      parameters:
+      - description: Create a product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Product'
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+      tags:
+      - product
+  /product/{id}:
+    delete:
+      description: Delete a product by ID
+      parameters:
+      - description: Delete product
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HTTPOK'
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+      tags:
+      - product
+    get:
+      description: Get a product by ID
+      parameters:
+      - description: Get product
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+      tags:
+      - product
+  /product{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update a product by ID
+      parameters:
+      - description: Update a product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.Product'
+      - description: Update product
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+      tags:
+      - product
+  /products:
+    get:
+      description: Lists all the products
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.HTTPError'
+            - properties:
+                error:
+                  type: string
+              type: object
+      tags:
+      - product
+swagger: "2.0"

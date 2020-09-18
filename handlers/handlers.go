@@ -17,9 +17,20 @@ import (
 	database "github.com/reedkihaddi/REST-API/db"
 	"github.com/reedkihaddi/REST-API/models"
 	"go.uber.org/zap"
+
 )
 
-//GetProduct is the handler to get product given the product ID.
+
+
+// GetProduct godoc
+// @Description Get a product by ID
+// @Tags product
+// @Produce  json
+// @Param id path int true "Get product"
+// @Success 200 {object} models.Product
+// @Failure 404 {object} models.HTTPError{error=string}
+// @Failure 500 {object} models.HTTPError{error=string} 
+// @Router /product/{id} [get]
 func GetProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -34,7 +45,7 @@ func GetProduct(db *database.DB) http.Handler {
 		if err := db.GetProduct(p); err != nil {
 			switch err {
 			case sql.ErrNoRows:
-				logging.Log.Infof("Product with id:%s requested but not found.", vars["id"])
+				logging.Log.Warnf("Product with id:%s requested but not found.", vars["id"])
 				respondWithError(w, http.StatusNotFound, "Product not found")
 			default:
 				respondWithError(w, http.StatusInternalServerError, err.Error())
@@ -45,7 +56,16 @@ func GetProduct(db *database.DB) http.Handler {
 	})
 }
 
-//CreateProduct creates a product and inserts into the database.
+// CreateProduct godoc
+// @Description Create a product
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param product body models.Product true "Create a product"
+// @Success 201 {object} models.Product
+// @Failure 404 {object} models.HTTPError{error=string} 
+// @Failure 500 {object} models.HTTPError{error=string} 
+// @Router /product [post]
 func CreateProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -84,7 +104,7 @@ func CreateProduct(db *database.DB) http.Handler {
 
 		defer r.Body.Close()
 		if err := db.CreateProduct(p); err != nil {
-			logging.Log.Errorf("Couldn't insert a product into database. error: %s", err.Error())
+			logging.Log.Warnf("Couldn't insert a product into database. error: %s", err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -92,7 +112,17 @@ func CreateProduct(db *database.DB) http.Handler {
 	})
 }
 
-//UpdateProduct updates the product in the database.
+// UpdateProduct godoc
+// @Description Update a product by ID
+// @Tags product
+// @Accept  json
+// @Produce  json
+// @Param product body models.Product true "Update a product"
+// @Param id path int true "Update product"
+// @Success 200 {object} models.Product
+// @Failure 404 {object} models.HTTPError{error=string} 
+// @Failure 500 {object} models.HTTPError{error=string} 
+// @Router /product{id} [put]
 func UpdateProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -112,7 +142,7 @@ func UpdateProduct(db *database.DB) http.Handler {
 		defer r.Body.Close()
 		p.ID = id
 		if err := db.UpdateProduct(p); err != nil {
-			logging.Log.Errorf("Couldn't update a product with id:%s. error: %s", vars["id"], err.Error())
+			logging.Log.Warnf("Couldn't update a product with id:%s. error: %s", vars["id"], err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -120,7 +150,14 @@ func UpdateProduct(db *database.DB) http.Handler {
 	})
 }
 
-//DeleteProduct deletes the product from the database.
+// DeleteProduct godoc
+// @Description Delete a product by ID
+// @Tags product
+// @Param id path int true "Delete product"
+// @Success 200 {object} models.HTTPOK
+// @Failure 404 {object} models.HTTPError{error=string}
+// @Failure 500 {object} models.HTTPError{error=string} 
+// @Router /product/{id} [delete]
 func DeleteProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -133,7 +170,7 @@ func DeleteProduct(db *database.DB) http.Handler {
 		p := &models.Product{}
 		p.ID = id
 		if err := db.DeleteProduct(p); err != nil {
-			logging.Log.Errorf("Couldn't delete a product with id:%s. error: %s", vars["id"], err.Error())
+			logging.Log.Warnf("Couldn't delete a product with id:%s. error: %s", vars["id"], err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -142,16 +179,21 @@ func DeleteProduct(db *database.DB) http.Handler {
 	})
 }
 
-//ListProducts lists all the products from the database.
+// ListProducts godoc
+// @Description Lists all the products
+// @Tags product
+// @Success 200 "OK"
+// @Failure 404 {object} models.HTTPError{error=string}
+// @Failure 500 {object} models.HTTPError{error=string} 
+// @Router /products [get]
 func ListProducts(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		products, err := db.ListProducts()
 		if err != nil {
-			logging.Log.Errorf("Couldn't list products. error: %s", err.Error())
+			logging.Log.Warnf("Couldn't list products. error: %s", err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
-
 		respondWithJSON(w, http.StatusOK, products)
 	})
 }
@@ -167,6 +209,7 @@ func WithMetrics(l *zap.SugaredLogger, next http.Handler) http.Handler {
 
 // Respond with error in case something goes wrong.
 func respondWithError(w http.ResponseWriter, code int, message string) {
+	logging.Log.Warnf("error: %s", message)
 	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
