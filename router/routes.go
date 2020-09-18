@@ -72,6 +72,6 @@ func (env *Env) initRoutes() {
 			Handle(route.Pattern, route.HandlerFunc).
 			Name(route.Name).Methods(route.Method)
 	}
-	env.Router.PathPrefix("/docs").Handler(httpSwagger.WrapHandler)
+	env.Router.PathPrefix("/docs").Handler(handlers.WithMetrics(logging.Log,httpSwagger.WrapHandler))
 
 }

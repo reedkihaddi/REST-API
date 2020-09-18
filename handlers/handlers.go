@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -17,10 +16,7 @@ import (
 	database "github.com/reedkihaddi/REST-API/db"
 	"github.com/reedkihaddi/REST-API/models"
 	"go.uber.org/zap"
-
 )
-
-
 
 // GetProduct godoc
 // @Description Get a product by ID
@@ -29,7 +25,7 @@ import (
 // @Param id path int true "Get product"
 // @Success 200 {object} models.Product
 // @Failure 404 {object} models.HTTPError{error=string}
-// @Failure 500 {object} models.HTTPError{error=string} 
+// @Failure 500 {object} models.HTTPError{error=string}
 // @Router /product/{id} [get]
 func GetProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -45,9 +41,10 @@ func GetProduct(db *database.DB) http.Handler {
 		if err := db.GetProduct(p); err != nil {
 			switch err {
 			case sql.ErrNoRows:
-				logging.Log.Warnf("Product with id:%s requested but not found.", vars["id"])
+				logging.Log.Infof("Product with id:%s requested but not found.", vars["id"])
 				respondWithError(w, http.StatusNotFound, "Product not found")
 			default:
+				logging.Log.Infof("Product with id:%s requested but not found.", vars["id"])
 				respondWithError(w, http.StatusInternalServerError, err.Error())
 			}
 			return
@@ -63,8 +60,8 @@ func GetProduct(db *database.DB) http.Handler {
 // @Produce  json
 // @Param product body models.Product true "Create a product"
 // @Success 201 {object} models.Product
-// @Failure 404 {object} models.HTTPError{error=string} 
-// @Failure 500 {object} models.HTTPError{error=string} 
+// @Failure 404 {object} models.HTTPError{error=string}
+// @Failure 500 {object} models.HTTPError{error=string}
 // @Router /product [post]
 func CreateProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -96,7 +93,7 @@ func CreateProduct(db *database.DB) http.Handler {
 
 			// A 500 Internal Server Error response.
 			default:
-				log.Println(err.Error())
+				logging.Log.Info("Error in creating product")
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 			return
@@ -104,7 +101,7 @@ func CreateProduct(db *database.DB) http.Handler {
 
 		defer r.Body.Close()
 		if err := db.CreateProduct(p); err != nil {
-			logging.Log.Warnf("Couldn't insert a product into database. error: %s", err.Error())
+			logging.Log.Infof("Couldn't insert a product into database. error: %s", err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -120,15 +117,15 @@ func CreateProduct(db *database.DB) http.Handler {
 // @Param product body models.Product true "Update a product"
 // @Param id path int true "Update product"
 // @Success 200 {object} models.Product
-// @Failure 404 {object} models.HTTPError{error=string} 
-// @Failure 500 {object} models.HTTPError{error=string} 
+// @Failure 404 {object} models.HTTPError{error=string}
+// @Failure 500 {object} models.HTTPError{error=string}
 // @Router /product{id} [put]
 func UpdateProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id, err := strconv.Atoi(vars["id"])
 		if err != nil {
-			logging.Log.Error("Couldn't convert id to int.")
+			logging.Log.Info("Couldn't convert id to int.")
 			respondWithError(w, http.StatusBadRequest, "Invalid product ID")
 			return
 		}
@@ -142,7 +139,7 @@ func UpdateProduct(db *database.DB) http.Handler {
 		defer r.Body.Close()
 		p.ID = id
 		if err := db.UpdateProduct(p); err != nil {
-			logging.Log.Warnf("Couldn't update a product with id:%s. error: %s", vars["id"], err.Error())
+			logging.Log.Infof("Couldn't update a product with id:%s. error: %s", vars["id"], err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -156,21 +153,21 @@ func UpdateProduct(db *database.DB) http.Handler {
 // @Param id path int true "Delete product"
 // @Success 200 {object} models.HTTPOK
 // @Failure 404 {object} models.HTTPError{error=string}
-// @Failure 500 {object} models.HTTPError{error=string} 
+// @Failure 500 {object} models.HTTPError{error=string}
 // @Router /product/{id} [delete]
 func DeleteProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id, err := strconv.Atoi(vars["id"])
 		if err != nil {
-			logging.Log.Error("Couldn't convert id to int.")
+			logging.Log.Info("Couldn't convert id to int.")
 			respondWithError(w, http.StatusBadRequest, "Invalid product ID")
 			return
 		}
 		p := &models.Product{}
 		p.ID = id
 		if err := db.DeleteProduct(p); err != nil {
-			logging.Log.Warnf("Couldn't delete a product with id:%s. error: %s", vars["id"], err.Error())
+			logging.Log.Infof("Couldn't delete a product with id:%s. error: %s", vars["id"], err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -184,13 +181,13 @@ func DeleteProduct(db *database.DB) http.Handler {
 // @Tags product
 // @Success 200 "OK"
 // @Failure 404 {object} models.HTTPError{error=string}
-// @Failure 500 {object} models.HTTPError{error=string} 
+// @Failure 500 {object} models.HTTPError{error=string}
 // @Router /products [get]
 func ListProducts(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		products, err := db.ListProducts()
 		if err != nil {
-			logging.Log.Warnf("Couldn't list products. error: %s", err.Error())
+			logging.Log.Infof("Couldn't list products. error: %s", err.Error())
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -209,7 +206,6 @@ func WithMetrics(l *zap.SugaredLogger, next http.Handler) http.Handler {
 
 // Respond with error in case something goes wrong.
 func respondWithError(w http.ResponseWriter, code int, message string) {
-	logging.Log.Warnf("error: %s", message)
 	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
@@ -222,6 +218,7 @@ func respondWithJSON(w http.ResponseWriter, code int, p interface{}) {
 	w.Write(response)
 }
 
+//Hello is just hello?
 func Hello(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello there."))

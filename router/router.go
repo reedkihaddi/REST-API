@@ -1,10 +1,11 @@
 package router
 
 import (
-	"github.com/reedkihaddi/REST-API/logging"
 	"database/sql"
 	"fmt"
-	"log"
+	"os"
+
+	"github.com/reedkihaddi/REST-API/logging"
 
 	"github.com/gorilla/mux"
 
@@ -22,15 +23,15 @@ type Env struct {
 var env Env
 
 //NewRouter creates a new router.
-func NewRouter(user, password, dbname string) *mux.Router {
+func NewRouter() *mux.Router {
 
 	//Connect to the DB.
 	logging.Log.Info("Connecting to the database.")
-	conn := fmt.Sprintf("postgres://%s:%s@localhost/%s?sslmode=disable", user, password, dbname)
+	conn := fmt.Sprintf("postgres://%s:%s@localhost/%s?sslmode=disable", os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
 	var err error
 	dbcon, err := sql.Open("postgres", conn)
 	if err != nil {
-		log.Fatal(err)
+		logging.Log.Fatalf("db opening err: %s", err)
 	}
 
 	// Pass the db connection to database package.

@@ -18,5 +18,6 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
 	golang.org/x/tools v0.0.0-20200917221617-d56e4e40bc9d // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
