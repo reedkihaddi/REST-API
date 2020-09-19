@@ -1,6 +1,0 @@
-{Level:info Time:2020-09-18 23:38:17.7333728 +0530 IST m=+0.045009501 LoggerName: Message:Connecting to the database. Caller:D:/apigit/router/router.go:29 Stack:}
-{Level:info Time:2020-09-18 23:38:17.7353741 +0530 IST m=+0.047010801 LoggerName: Message:Creating the router. Caller:D:/apigit/router/router.go:43 Stack:}
-{Level:info Time:2020-09-18 23:38:17.7353741 +0530 IST m=+0.047010801 LoggerName: Message:Initalizing routes. Caller:D:/apigit/router/router.go:45 Stack:}
-{Level:info Time:2020-09-18 23:38:17.7353741 +0530 IST m=+0.047010801 LoggerName: Message:Starting up the server. Caller:D:/apigit/main.go:28 Stack:}
-{Level:info Time:2020-09-18 23:38:25.9304656 +0530 IST m=+8.242092501 LoggerName: Message:GET /product/5 took 41.0096ms Caller:D:/apigit/handlers/handlers.go:203 Stack:}
-{Level:info Time:2020-09-18 23:38:28.4070249 +0530 IST m=+10.718648801 LoggerName: Message:GET /products took 0s Caller:D:/apigit/handlers/handlers.go:203 Stack:}

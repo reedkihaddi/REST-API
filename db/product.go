@@ -6,7 +6,7 @@ import (
 
 	//pq is the PostgreSQL driver.
 	"github.com/lib/pq"
-	_ "github.com/lib/pq"
+	"github.com/reedkihaddi/REST-API/logging"
 	"github.com/reedkihaddi/REST-API/models"
 )
 
@@ -24,7 +24,7 @@ func New(db *sql.DB) (*DB, error) {
 //CreateProduct inserts a product into the database.
 func (db *DB) CreateProduct(p *models.Product) error {
 	//var s string
-	_,err := db.db.Exec("INSERT INTO products(id,name,price) VALUES($1,$2,$3)",
+	_, err := db.db.Exec("INSERT INTO products(id,name,price) VALUES($1,$2,$3)",
 		p.ID, p.Name, p.Price)
 	if err, ok := err.(*pq.Error); ok {
 		switch {
@@ -86,4 +86,16 @@ func (db *DB) ListProducts() ([]*models.Product, error) {
 		products = append(products, p)
 	}
 	return products, nil
+}
+
+//Check if DB connection is alive.
+func (db *DB) Check() bool {
+	err := db.db.Ping()
+	if err != nil {
+		logging.Log.Error("Database connection not alive.")
+		return false
+
+	}
+	logging.Log.Info("Database connection still alive.")
+	return true
 }

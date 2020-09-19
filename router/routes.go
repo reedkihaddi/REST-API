@@ -61,8 +61,13 @@ func (env *Env) initRoutes() {
 			Name:    "ListProduct",
 			Method:  "GET",
 			Pattern: "/products",
-			//HandlerFunc: handlers.ListProducts(env.DB),
 			HandlerFunc: handlers.WithMetrics(logging.Log, handlers.ListProducts(env.DB)),
+		},
+		Route{
+			Name:    "HealthAPI",
+			Method:  "GET",
+			Pattern: "/health",
+			HandlerFunc: handlers.WithMetrics(logging.Log, handlers.Check(env.DB)),
 		},
 	}
 
