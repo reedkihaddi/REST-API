@@ -1,0 +1,7 @@
+{Level:info Time:2020-09-20 23:22:11.3445057 +0530 IST m=+0.045010001 LoggerName: Message:Connecting to the database. Caller:D:/api/REST-API/cmd/router/router.go:30 Stack:}
+{Level:info Time:2020-09-20 23:22:11.3465061 +0530 IST m=+0.047010401 LoggerName: Message:Creating the router. Caller:D:/api/REST-API/cmd/router/router.go:44 Stack:}
+{Level:info Time:2020-09-20 23:22:11.3465061 +0530 IST m=+0.047010401 LoggerName: Message:Initalizing routes. Caller:D:/api/REST-API/cmd/router/router.go:48 Stack:}
+{Level:info Time:2020-09-20 23:22:11.3465061 +0530 IST m=+0.047010401 LoggerName: Message:Server started. Caller:D:/api/REST-API/cmd/main.go:56 Stack:}
+{Level:info Time:2020-09-20 23:22:26.9133918 +0530 IST m=+15.613877401 LoggerName: Message:GET /product/3 took 49.0112ms Caller:D:/api/REST-API/internal/handlers/api.go:204 Stack:}
+{Level:info Time:2020-09-20 23:22:55.2006571 +0530 IST m=+43.901108701 LoggerName: Message:Server stopped Caller:D:/api/REST-API/cmd/main.go:60 Stack:}
+{Level:info Time:2020-09-20 23:22:55.2016586 +0530 IST m=+43.902110201 LoggerName: Message:Server exited properly Caller:D:/api/REST-API/cmd/main.go:70 Stack:}
