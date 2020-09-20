@@ -16,8 +16,8 @@ var Log *zap.SugaredLogger
 var lumlog = &lumberjack.Logger{
 	Filename:   "./pkg/logging/server.log",
 	MaxSize:    1, // megabytes
-	MaxBackups: 5,   // number of log files
-	MaxAge:     1,   // days
+	MaxBackups: 5, // number of log files
+	MaxAge:     1, // days
 }
 
 // InitLogger to initialize the logger.

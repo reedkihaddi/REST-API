@@ -45,7 +45,7 @@ func NewRouter() *mux.Router {
 	env.Router = mux.NewRouter()
 	// Use JWT middleware.
 	env.Router.Use(handlers.JWTAuthentication)
-	logging.Log.Info("Initalizing routes.")
+	logging.Log.Info("Initializing routes.")
 	env.initRoutes()
 
 	return env.Router

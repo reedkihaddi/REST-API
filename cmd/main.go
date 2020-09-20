@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/reedkihaddi/REST-API/cmd/router"
 	"github.com/reedkihaddi/REST-API/config"
 	"github.com/reedkihaddi/REST-API/pkg/logging"
-	"github.com/reedkihaddi/REST-API/cmd/router"
 )
 
 // @title Products API
@@ -31,12 +31,12 @@ func main() {
 	logging.InitLogger()
 	config.InitConfig()
 	router := router.NewRouter()
-	
+
 	srv := &http.Server{
 		Addr:    os.Getenv("PORT"),
 		Handler: router,
 	}
-	
+
 	// Create a channel to listen for shutdown
 	signalChan := make(chan os.Signal, 1)
 	// Notify channel for signals
@@ -46,7 +46,7 @@ func main() {
 		syscall.SIGINT,  // sent when controlling terminal presses the interrupt character (Control-C)
 		syscall.SIGQUIT, // sent when controlling terminal presses the quit character (Control-Backslash)
 	)
-	
+
 	// Listen to connections
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
@@ -54,7 +54,7 @@ func main() {
 		}
 	}()
 	logging.Log.Info("Server started.")
-	
+
 	// Block
 	<-signalChan
 	logging.Log.Info("Server stopped")
@@ -62,11 +62,11 @@ func main() {
 	defer func() {
 		cancel()
 	}()
-	
+
 	if err := srv.Shutdown(ctx); err != nil {
 		logging.Log.Fatalf("Server shutdown failed:%+v", err)
 	}
-	
+
 	logging.Log.Info("Server exited properly")
 
 }

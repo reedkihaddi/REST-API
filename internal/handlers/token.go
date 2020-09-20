@@ -15,10 +15,10 @@ var jwtKey = []byte(os.Getenv("SECRET"))
 func JWTAuthentication(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		
+
 		// List of endpoints that  require auth
-		auth := []string{"/products"} 
-		requestPath := r.URL.Path  
+		auth := []string{"/products"}
+		requestPath := r.URL.Path
 
 		// Check if request does not need authentication, serve the request if it doesn't need it
 		for _, value := range auth {
@@ -30,7 +30,7 @@ func JWTAuthentication(next http.Handler) http.Handler {
 		}
 
 		tokenHeader := r.Header.Get("Authorization")
-		if tokenHeader == "" { 
+		if tokenHeader == "" {
 			respondWithError(w, http.StatusForbidden, "Missing auth token")
 			return
 		}
@@ -41,12 +41,11 @@ func JWTAuthentication(next http.Handler) http.Handler {
 			return jwtKey, nil
 		})
 
-
-		if err != nil { 
+		if err != nil {
 			respondWithError(w, http.StatusForbidden, "Malformed authentication token")
 			return
 		}
-		if !token.Valid { 
+		if !token.Valid {
 			respondWithError(w, http.StatusForbidden, "Token is not valid.")
 			return
 		}
@@ -54,37 +53,37 @@ func JWTAuthentication(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 
 		/*
-		IF WANT TO STORE JWT TOKEN IN HTTP COOKIE
-		c, err := r.Cookie("token")
-		if err != nil {
-			if err == http.ErrNoCookie {
-				// If the cookie is not set, return an unauthorized status
-				respondWithError(w, http.StatusUnauthorized, "Missing http cookie, go to /token")
+			IF WANT TO STORE JWT TOKEN IN HTTP COOKIE
+			c, err := r.Cookie("token")
+			if err != nil {
+				if err == http.ErrNoCookie {
+					// If the cookie is not set, return an unauthorized status
+					respondWithError(w, http.StatusUnauthorized, "Missing http cookie, go to /token")
+					return
+				}
+				// For any other type of error, return a bad request status
+				respondWithError(w, http.StatusBadRequest, "http cookie error")
 				return
 			}
-			// For any other type of error, return a bad request status
-			respondWithError(w, http.StatusBadRequest, "http cookie error")
-			return
-		}
-		Get the JWT string from the cookie
-		tknStr := c.Value
-		claims := &models.Token{}
-		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
-		})
-		if err != nil {
-			if err == jwt.ErrSignatureInvalid {
-				respondWithError(w, http.StatusUnauthorized, "signature invalid")
+			Get the JWT string from the cookie
+			tknStr := c.Value
+			claims := &models.Token{}
+			tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+				return jwtKey, nil
+			})
+			if err != nil {
+				if err == jwt.ErrSignatureInvalid {
+					respondWithError(w, http.StatusUnauthorized, "signature invalid")
+					return
+				}
+				respondWithError(w, http.StatusBadRequest, "error in jwt token")
 				return
 			}
-			respondWithError(w, http.StatusBadRequest, "error in jwt token")
-			return
-		}
-		if !tkn.Valid {
-			respondWithError(w, http.StatusUnauthorized, "token invalid")
-			return
-		}
-		next.ServeHTTP(w, r) */
+			if !tkn.Valid {
+				respondWithError(w, http.StatusUnauthorized, "token invalid")
+				return
+			}
+			next.ServeHTTP(w, r) */
 	})
 }
 
@@ -106,15 +105,15 @@ func GetToken() http.Handler {
 			return
 		}
 		/*
-		IF WANT TO STORE IN HTTP COOKIE
-		http.SetCookie(w, &http.Cookie{
-			Name:    "token",
-			Value:   tokenString,
-			Expires: expirationTime,
-			HttpOnly: true,
-		})
-		JWT Token */
-		
+			IF WANT TO STORE IN HTTP COOKIE
+			http.SetCookie(w, &http.Cookie{
+				Name:    "token",
+				Value:   tokenString,
+				Expires: expirationTime,
+				HttpOnly: true,
+			})
+			JWT Token */
+
 		w.Write([]byte(tokenString))
 	})
 }
