@@ -7,7 +7,7 @@ import (
 	"github.com/reedkihaddi/REST-API/logging"
 )
 
-//InitConfig loads the env variables.
+// InitConfig loads the env variables.
 func InitConfig() {
 	env := os.Getenv("ENV")
 	if "" == env {

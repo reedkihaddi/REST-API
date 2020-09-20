@@ -17,7 +17,7 @@ type healthCheckResponse struct {
 	Status string `json:"status"`
 }
 
-//Check is for the health of API
+// Check is for the health of API
 func Check(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		dbUp := db.Check()

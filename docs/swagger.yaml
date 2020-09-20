@@ -145,7 +145,6 @@ paths:
               type: object
       tags:
       - product
-  /product{id}:
     put:
       consumes:
       - application/json
@@ -213,6 +212,13 @@ paths:
                 error:
                   type: string
               type: object
+      security:
+      - ApiKeyAuth: []
       tags:
       - product
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

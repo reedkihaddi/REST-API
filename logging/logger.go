@@ -12,7 +12,7 @@ import (
 // Log is used to access log within other pacakages.
 var Log *zap.SugaredLogger
 
-//Log rolling with lumberjack package
+// Log rolling with lumberjack package
 var lumlog = &lumberjack.Logger{
 	Filename:   "./logging/server.log",
 	MaxSize:    1, // megabytes
@@ -20,7 +20,7 @@ var lumlog = &lumberjack.Logger{
 	MaxAge:     1,   // days
 }
 
-//InitLogger to initialize the logger.
+// InitLogger to initialize the logger.
 func InitLogger() {
 	logger, err := zap.NewDevelopment(zap.Hooks(lumberjackZapHook))
 	if err != nil {

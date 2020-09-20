@@ -4,26 +4,25 @@ import (
 	"database/sql"
 	"errors"
 
-	//pq is the PostgreSQL driver.
+	// pq is the PostgreSQL driver.
 	"github.com/lib/pq"
 	"github.com/reedkihaddi/REST-API/logging"
 	"github.com/reedkihaddi/REST-API/models"
 )
 
-//DB struct for the sql connection.
+// DB struct for the sql connection.
 type DB struct {
 	db *sql.DB
 }
 
-//New passes the sql connection to the DB struct.
+// New passes the sql connection to the DB struct.
 func New(db *sql.DB) (*DB, error) {
 	// Configure any package-level settings
 	return &DB{db}, nil
 }
 
-//CreateProduct inserts a product into the database.
+// CreateProduct inserts a product into the database.
 func (db *DB) CreateProduct(p *models.Product) error {
-	//var s string
 	_, err := db.db.Exec("INSERT INTO products(id,name,price) VALUES($1,$2,$3)",
 		p.ID, p.Name, p.Price)
 	if err, ok := err.(*pq.Error); ok {
@@ -37,7 +36,7 @@ func (db *DB) CreateProduct(p *models.Product) error {
 	return nil
 }
 
-//GetProduct fetches the product from the database.
+// GetProduct fetches the product from the database.
 func (db *DB) GetProduct(p *models.Product) error {
 	err := db.db.QueryRow("SELECT name, price FROM products WHERE id=$1",
 		p.ID).Scan(&p.Name, &p.Price)
@@ -47,7 +46,7 @@ func (db *DB) GetProduct(p *models.Product) error {
 	return nil
 }
 
-//UpdateProduct updates the product in the database.
+// UpdateProduct updates the product in the database.
 func (db *DB) UpdateProduct(p *models.Product) error {
 	_, err := db.db.Exec("UPDATE products SET name=$1, price=$2 WHERE id=$3",
 		p.Name, p.Price, p.ID)
@@ -57,7 +56,7 @@ func (db *DB) UpdateProduct(p *models.Product) error {
 	return nil
 }
 
-//DeleteProduct deletes the product from the database.
+// DeleteProduct deletes the product from the database.
 func (db *DB) DeleteProduct(p *models.Product) error {
 	_, err := db.db.Exec("DELETE FROM products WHERE id=$1", p.ID)
 	if err != nil {
@@ -66,7 +65,7 @@ func (db *DB) DeleteProduct(p *models.Product) error {
 	return nil
 }
 
-//ListProducts lists all the products from the database.
+// ListProducts lists all the products from the database.
 func (db *DB) ListProducts() ([]*models.Product, error) {
 
 	rows, err := db.db.Query("SELECT id,name,price FROM products")
@@ -88,7 +87,7 @@ func (db *DB) ListProducts() ([]*models.Product, error) {
 	return products, nil
 }
 
-//Check if DB connection is alive.
+// Check if DB connection is alive.
 func (db *DB) Check() bool {
 	err := db.db.Ping()
 	if err != nil {

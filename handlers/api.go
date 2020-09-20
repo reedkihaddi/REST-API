@@ -119,7 +119,7 @@ func CreateProduct(db *database.DB) http.Handler {
 // @Success 200 {object} models.Product
 // @Failure 404 {object} models.HTTPError{error=string}
 // @Failure 500 {object} models.HTTPError{error=string}
-// @Router /product{id} [put]
+// @Router /product/{id} [put]
 func UpdateProduct(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -179,6 +179,7 @@ func DeleteProduct(db *database.DB) http.Handler {
 // ListProducts godoc
 // @Description Lists all the products
 // @Tags product
+// @Security ApiKeyAuth
 // @Success 200 "OK"
 // @Failure 404 {object} models.HTTPError{error=string}
 // @Failure 500 {object} models.HTTPError{error=string}
@@ -195,7 +196,7 @@ func ListProducts(db *database.DB) http.Handler {
 	})
 }
 
-//WithMetrics returns the time taken for the request.
+// WithMetrics returns the time taken for the request.
 func WithMetrics(l *zap.SugaredLogger, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		began := time.Now()
@@ -218,7 +219,7 @@ func respondWithJSON(w http.ResponseWriter, code int, p interface{}) {
 	w.Write(response)
 }
 
-//Hello is just hello?
+// Hello is just hello?
 func Hello(db *database.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello there."))

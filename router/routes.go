@@ -17,10 +17,8 @@ type Route struct {
 	HandlerFunc http.Handler
 }
 
-//List of routes.
+// List of routes.
 var routes []Route
-
-//var logger = log.New(os.Stdout, "", log.Ldate | log.Ltime)
 
 // Contains all the routes.
 func (env *Env) initRoutes() {
@@ -68,6 +66,12 @@ func (env *Env) initRoutes() {
 			Method:  "GET",
 			Pattern: "/health",
 			HandlerFunc: handlers.WithMetrics(logging.Log, handlers.Check(env.DB)),
+		},
+		Route{
+			Name:    "GetJWT",
+			Method:  "GET",
+			Pattern: "/token",
+			HandlerFunc: handlers.WithMetrics(logging.Log, handlers.GetToken()),
 		},
 	}
 

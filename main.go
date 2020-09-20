@@ -16,6 +16,9 @@ import (
 // @title Products API
 // @version 1.0
 // @description This is a sample REST-API
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.email saruabhbraryo@gmail.com
@@ -34,9 +37,9 @@ func main() {
 		Handler: router,
 	}
 	
-	//Create a channel to listen for shutdown
+	// Create a channel to listen for shutdown
 	signalChan := make(chan os.Signal, 1)
-	//Notify channel for signals
+	// Notify channel for signals
 	signal.Notify(
 		signalChan,
 		syscall.SIGHUP,  // sent when a program loses its controlling terminal
@@ -44,7 +47,7 @@ func main() {
 		syscall.SIGQUIT, // sent when controlling terminal presses the quit character (Control-Backslash)
 	)
 	
-	//Listen to connections
+	// Listen to connections
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
 			logging.Log.Fatalf("listen: %s\n", err)
@@ -52,7 +55,7 @@ func main() {
 	}()
 	logging.Log.Info("Server started.")
 	
-	//Block
+	// Block
 	<-signalChan
 	logging.Log.Info("Server stopped")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
