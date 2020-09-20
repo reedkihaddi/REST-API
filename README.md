@@ -26,7 +26,7 @@ The API uses the following Go packages:
 
 ```bash
 # Download
-git clone https://github.com/reedkihaddi
+git clone https://github.com/reedkihaddi/REST-API/
 
 cd REST-API
 
