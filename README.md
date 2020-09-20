@@ -34,7 +34,7 @@ cd REST-API
 # Create a new database.
 
 # Change the configuration file in ./config and dbconf.yml in ./db.
-
+# Download dependencies
 # Run goose up and add seed data.
 
 # Run the server 
