@@ -12,7 +12,6 @@ Features of the API:
 * HealthCheck
 * API Docs using SwaggerUI
 * Error Handling
-* Health Check
 * Data migration
 * Data seed
 
