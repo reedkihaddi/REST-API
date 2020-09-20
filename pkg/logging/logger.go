@@ -14,7 +14,7 @@ var Log *zap.SugaredLogger
 
 // Log rolling with lumberjack package
 var lumlog = &lumberjack.Logger{
-	Filename:   "./logging/server.log",
+	Filename:   "./pkg/logging/server.log",
 	MaxSize:    1, // megabytes
 	MaxBackups: 5,   // number of log files
 	MaxAge:     1,   // days

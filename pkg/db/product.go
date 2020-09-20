@@ -6,8 +6,8 @@ import (
 
 	// pq is the PostgreSQL driver.
 	"github.com/lib/pq"
-	"github.com/reedkihaddi/REST-API/logging"
-	"github.com/reedkihaddi/REST-API/models"
+	"github.com/reedkihaddi/REST-API/pkg/logging"
+	"github.com/reedkihaddi/REST-API/pkg/models"
 )
 
 // DB struct for the sql connection.

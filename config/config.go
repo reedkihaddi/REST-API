@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/reedkihaddi/REST-API/logging"
+	"github.com/reedkihaddi/REST-API/pkg/logging"
 )
 
 // InitConfig loads the env variables.

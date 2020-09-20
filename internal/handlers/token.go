@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/reedkihaddi/REST-API/models"
+	"github.com/reedkihaddi/REST-API/pkg/models"
 )
 
 var jwtKey = []byte(os.Getenv("SECRET"))
@@ -59,7 +59,7 @@ func JWTAuthentication(next http.Handler) http.Handler {
 		if err != nil {
 			if err == http.ErrNoCookie {
 				// If the cookie is not set, return an unauthorized status
-				respondWithError(w, http.StatusUnauthorized, "Missing http cookie, go to /jwt")
+				respondWithError(w, http.StatusUnauthorized, "Missing http cookie, go to /token")
 				return
 			}
 			// For any other type of error, return a bad request status

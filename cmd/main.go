@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/reedkihaddi/REST-API/config"
-	"github.com/reedkihaddi/REST-API/logging"
-	"github.com/reedkihaddi/REST-API/router"
+	"github.com/reedkihaddi/REST-API/pkg/logging"
+	"github.com/reedkihaddi/REST-API/cmd/router"
 )
 
 // @title Products API

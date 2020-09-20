@@ -10,11 +10,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/reedkihaddi/REST-API/logging"
+	"github.com/reedkihaddi/REST-API/pkg/logging"
 
 	"github.com/gorilla/mux"
-	database "github.com/reedkihaddi/REST-API/db"
-	"github.com/reedkihaddi/REST-API/models"
+	database "github.com/reedkihaddi/REST-API/pkg/db"
+	"github.com/reedkihaddi/REST-API/pkg/models"
 	"go.uber.org/zap"
 )
 

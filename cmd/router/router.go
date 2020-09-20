@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/reedkihaddi/REST-API/handlers"
-	"github.com/reedkihaddi/REST-API/logging"
+	"github.com/reedkihaddi/REST-API/internal/handlers"
+	"github.com/reedkihaddi/REST-API/pkg/logging"
 
 	"github.com/gorilla/mux"
 
 	// pq is the PostgreSQL driver
 	_ "github.com/lib/pq"
-	database "github.com/reedkihaddi/REST-API/db"
+	database "github.com/reedkihaddi/REST-API/pkg/db"
 )
 
 // Env struct contains info about db and router for the router package only.

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	database "github.com/reedkihaddi/REST-API/db"
+	database "github.com/reedkihaddi/REST-API/pkg/db"
 )
 
 func writeJSONResponse(w http.ResponseWriter, code int, data []byte) {
