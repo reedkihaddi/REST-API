@@ -34,7 +34,7 @@ cd REST-API
 # Make sure you Postgres setup.
 # Create a new database.
 
-# Change the configuration file in ./config.
+# Change the configuration file in ./config and dbconf.yml in ./db.
 
 # Run goose up and add seed data.
 
